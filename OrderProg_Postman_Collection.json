@@ -1,0 +1,198 @@
+{
+	"info": {
+		"_postman_id": "8c66e92b-8a58-45e0-827c-9b1689255ab7",
+		"name": "OrderProg API Collection",
+		"description": "API collection for the Order Management and Scheduler Status Progression Engine.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Get Orders List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders?page=1&limit=10&status=ALL&search=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "ALL"
+								},
+								{
+									"key": "search",
+									"value": ""
+								}
+							]
+						},
+						"description": "Fetch orders with dynamic search filters and cursor-pagination keys."
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": \"ORD-TEST-4\",\n  \"customerName\": \"Gaurav Kumar\",\n  \"phoneNumber\": \"+91 9988776655\",\n  \"productName\": \"Mechanical Gaming Keyboard\",\n  \"amount\": 89.50,\n  \"paymentStatus\": \"PENDING\",\n  \"orderStatus\": \"PLACED\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						},
+						"description": "Generate a new order. Enforces unique orderId constraints and alphabetical name rules."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order Details (Patch)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderStatus\": \"PROCESSING\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/ORDER_DB_ID",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"ORDER_DB_ID"
+							]
+						},
+						"description": "Modify order state or payment status. Replaces ORDER_DB_ID with the MongoDB ObjectID."
+					},
+					"response": []
+				},
+				{
+					"name": "Seed Mock Test Orders",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/seed-dummy",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"seed-dummy"
+							]
+						},
+						"description": "Seed 3 test orders with backdated timestamps (1m, 15m, 50m ago) to audit scheduler rules."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Scheduler",
+			"item": [
+				{
+					"name": "Execute Scheduler Manually",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-scheduler-key",
+								"value": "super_secret_scheduler_key_123"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/scheduler/run",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"scheduler",
+								"run"
+							]
+						},
+						"description": "Manually trigger background order status transitions. Requires validation key header."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Scheduler Execution Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/scheduler/logs?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"scheduler",
+								"logs"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Fetch chronological scheduler logs of execution runs."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000/api",
+			"type": "string"
+		}
+	]
+}
